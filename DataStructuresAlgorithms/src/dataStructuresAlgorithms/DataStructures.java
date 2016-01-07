@@ -461,59 +461,7 @@ public class DataStructures {
 		}
 	}
 	
-	/*
-	static class MinHeap{
-		int data;
-		MinHeap left;
-		MinHeap right;
-		MinHeap parent;
-		
-		MinHeap(int d){
-			data = d;
-		}
-		
-		void add(int d) throws Exception{
-			MyQueue<MinHeap> queue = new MyQueue<MinHeap>();
-			MinHeap node = new MinHeap(d);
-			boolean finished = false;
-			
-			if(left == null){
-				node.parent = this;
-				left = node;
-			}
-			else if(right == null){
-				node.parent = this;
-				right = node;
-			}
-			else{
-				MinHeap node2 = left;
-				queue.add(right);
-				while(finished == false){
-					if(node2.left == null){
-						node.parent = node2;
-						node2.left = node;
-						finished = true;
-					}
-					else if(node2.right == null){
-						node.parent = node2;
-						node2.right = node;
-						finished =true;
-					}
-					else{
-						queue.add(node2.left);
-						queue.add(node2.right);
-						node2 = queue.remove();
-						}
-					}
-				}		
-			}
-		
-		int extractMin(){
-			if(left == null && right == null)
-				return this.data;
-			
-		}
-	} */
+	
 	
 	/* Implementation of the bubblesort Algorithm*/
 	static void bubbleSort(int[] arr){
