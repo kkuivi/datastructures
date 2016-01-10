@@ -1,23 +1,22 @@
-package dataStructuresAlgorithms;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class DataStructures {
 	public static void main(String args[]) throws Exception{
-		/*HashTable h = new HashTable(100);
+		
+		/*HashTable h = new HashTable(1);
 		h.hash(1, 1);
 		h.hash(2, 4);
 		h.hash(3, 9);
-		System.out.println(h.get(1) + " " + h.get(2) + " " + h.get(3) + " " + h.get(5));
+		System.out.println(h.get(1) + " " + h.get(2) + " " + h.get(3) + " " + h.get(5));*/
 		
-		String[] word_list = {"my", "name", "is", "elikem"};
+		/*String[] word_list = {"my", "name", "is", "elikem"};
 		StringBuilder sentence = new StringBuilder();
 		for(String w: word_list){
 			sentence.append(w);
 		}
-		System.out.println(sentence.changeToString());
+		System.out.println(sentence.changeToString());*/
 		
-		mArrayList arr = new mArrayList();
+		/*mArrayList arr = new mArrayList();
 		System.out.println(" size: " + arr.arr_size());
 		arr.add(1);
 		System.out.println(arr.find(1) + " size: " + arr.arr_size());
@@ -31,10 +30,10 @@ public class DataStructures {
 		stack.push(5);
 		stack.push(4);
 		stack.push(3);
-		System.out.println(stack.pop() + " " + stack.pop() + " " + stack.pop());
+		System.out.println(stack.pop() + " " + stack.pop() + " " + stack.pop()); */
 		
 		
-		MyQueue<String> queue = new MyQueue<String>();
+		/*MyQueue<String> queue = new MyQueue<String>();
 		queue.add("my");
 		queue.add("name");
 		queue.add("elikem");
@@ -48,7 +47,8 @@ public class DataStructures {
 		
 		postOrderTrav(t); */
 		
-		/*int[] arr = {1,2,4,3,5,6,7};
+		/*
+		int[] arr = {1,2,4,3,5,6,7};
 		bubbleSort(arr);
 		printarr("bubblesort",arr);
 		int[] arr2 = {1,2,3,4,5,6,7};
@@ -62,17 +62,17 @@ public class DataStructures {
 		printarr("quicksort",arr4);
 		int[] arr5 = {10, 11, 9, 8, 100, 250};
 		radixsort(arr5, 3);
-		printarr("radixsort", arr5);*/
+		printarr("radixsort", arr5);
 		
 		//int[] search_arr = {};
 		//System.out.println(binarysearch(search_arr,1));
 		
 		//int[] search_arr = {-1,0,3,5,7,8};
-		//System.out.println(binarySearchRecursive(search_arr, 2));
+		//System.out.println(binarySearchRecursive(search_arr, 2));*/
 		
 	}
 	
-	/*Prints the elements in an arr*/
+	/*Prints the elements in an array*/
 	static void printarr(String method, int[] arr){
 		System.out.println(method+ ":");
 		for(int i= 0; i< arr.length; i++){
@@ -81,18 +81,81 @@ public class DataStructures {
 		System.out.println();
 	}
 	
+	/*Returns an boolean array storing whether all odd numbers from 0 to max+1 are prime
+	 * or not*/
+	static boolean[] sieveofEratosthenes(int max){
+		boolean[] 	flags = new boolean[(max + 1)/2];
+		init(flags,  true); //initialize every index in flags to true
+		int prime_index = 1; //start with the index 1 of flags[] which represents 2(1) + 1 = 3
+		while(prime_index > 0 && prime_index < flags.length){
+			cancelMultiples(prime_index, flags); //go through flags[] and set all multiples of 2(prime_index) + 1 to false
+			prime_index= nextPrimeIndex(flags, prime_index); //find the next prime number after prime_index
+		}
+		return flags;
+	}
+	
+	/*Initialize every index in the boolean array to the value of b*/
+	static void init(boolean[] flags, boolean b){
+		for(int i = 0; i < flags.length; i ++){
+			flags[i] = b;
+		}
+	}
+	
+	/*go through boolean array and set the index of all multiples of 2(prime_index) + 1 to 
+	 * false*/
+	static void cancelMultiples(int prime_index, boolean[] flags){
+		int prime = 2*prime_index + 1;
+		int p_index = (prime*prime)/2; //stores index of prime*prime in the boolean array
+		/*for loop starts from the index of prime*prime because if every multiple of k*prime
+		 * where k < prime  has been canceled, then we just need to start from prime*prime and cancel
+		 * its multiples*/
+		for(int i = p_index; i < flags.length; i += prime){
+			flags[i] = false;
+		}
+	}
+	
+	/*returns the index of the next prime number after prime_index*/
+	static int nextPrimeIndex(boolean[] flags, int prime_index){
+		int p_index = ++prime_index;
+		while(p_index < flags.length){
+			if(flags[p_index] == true){
+				return p_index;
+			}
+			p_index ++;
+		}
+		return -1; //return -1 if there's no other prime number after prime_index
+	}
+	
+	/*returns the largest prime number in the boolean array*/
+	static int findLargestPrime(boolean[] prime_checker){
+		for(int i = prime_checker.length - 1; i >= 0; i --){
+			if(i == 0) //since each index in prime_checker represents 2*i + 1, 
+					  //if i == 0, then the largest prime should be 2 not 1 
+				return 2;
+	
+			else if(prime_checker[i] == true)
+				return 2*i + 1;
+		}
+		return -1; //returns -1 if there's no prime number in the boolean array
+	}
+	
 	/*HashTable class*/
 	 static class HashTable{
+		/*This implementation will have a LinkedList at each index of the Hash Table*/
 		Node[] indices;
 		
 		HashTable(int size){
-			this.indices = new Node[size];
+			boolean[] prime_checker = sieveofEratosthenes(size);//stores whether numbers from 0 to size +1 is prime
+			int closest_prime = findLargestPrime(prime_checker); //returns the largest prime number from the prime_checker array
+			this.indices = new Node[closest_prime]; //sets the length of the indices array to a prime number closest to the size variable
+			/*Initialize the indices array with an empty LinkedList at each index*/
 			for(int i = 0; i < indices.length; i ++)
 				indices[i] = new Node();
 		}
 		
+
 		int hashcode(int x){
-			int result = (int) Math.pow(x*7, 2);
+			int result = (int) Math.pow(x,x);
 			return result;
 		}
 		
@@ -111,6 +174,8 @@ public class DataStructures {
 	
 	 /*Node Class which implements the LinkedList data structure*/
 	static class Node{
+		/*Each Node of the LinkedList has a unique key and the data it holds
+		 * This unique key is used because it will be used by the hash table class*/
 		Node next = null;
 		int data;
 		int key;
@@ -120,8 +185,10 @@ public class DataStructures {
 			this.data = d;
 		}
 		
-		Node(){ }
-				
+		//Empty constructor that just sets data and key to null
+		Node(){}
+		
+		//Add a new Node to the end of the LinkedList
 		void append(int k, int v){
 			Node x = new Node(k, v);
 			Node n = this;
@@ -133,6 +200,7 @@ public class DataStructures {
 			n.next = x;
 		}
 		
+		
 		int get(int k){
 			Node n = this.next;
 	
@@ -142,7 +210,7 @@ public class DataStructures {
 				else
 					n = n.next;
 			}
-			return -1;
+			return -1; // returns -1 if Node with key k cannot be found in the LinkedList
 		}
 	}
 	
@@ -158,19 +226,16 @@ public class DataStructures {
 			words.add(s);
 		}
 		
+		
 		String changeToString(){
-			String w = "";
-			for(int i = 0; i < words.size(); i ++){
-				w += words.get(i);
-			}
-			return w;
+			return words.toString().replaceAll("\\[|\\]|,", ""); //removes all "[", "]", "," from the String value of words returned
 		}	
 	}
 	
 	/*Implementation of an ArrayList. Size of Array grows by 2 every time it's full*/
 	static class mArrayList{
 		int [] arr;
-		int empty_index;
+		int empty_index; //keeps track of the empty index in arr
 		
 		mArrayList(){
 			arr = new int[1];
@@ -192,6 +257,7 @@ public class DataStructures {
 				return false;
 		}
 		
+		//increase size of arr by 2
 		void resize(){
 			int[] n_arr = new int[2*arr.length];
 			for(int i = 0; i < arr.length; i++)
@@ -227,7 +293,7 @@ public class DataStructures {
 			}
 		}
 		
-		private QueueNode<T> first;
+		private QueueNode<T> first; 
 		private QueueNode<T> last;
 		
 		void add(T d){
@@ -241,10 +307,11 @@ public class DataStructures {
 				last  = item;}
 			}
 		
-		T remove() throws Exception{
+		
+		T remove() throws EmptyQueueException{
 			T item;
 			if(first == null)
-				throw new Exception();
+				throw new EmptyQueueException();
 			else if(first == last){
 				item = first.data;
 				first = null;
@@ -263,7 +330,7 @@ public class DataStructures {
 	
 	/*Implementation of Queue that only stores integers*/
 	static class MyIntQueue{
-		private static class QueueNode<T>{
+		private static class QueueNode{
 			private int data;
 			private QueueNode next;
 			
@@ -304,7 +371,6 @@ public class DataStructures {
 		boolean empty(){
 			return first==null;
 		}
-		
 	}
 	
 	
@@ -331,10 +397,10 @@ public class DataStructures {
 			}
 		}
 		
-		T pop() throws Exception{
+		T pop() throws EmptyStackException{
 			T item = null;
 			if(top == null)
-				throw new Exception();
+				throw new EmptyStackException();
 			else{
 				item = top.data;
 				if(top.next == null)
@@ -357,7 +423,7 @@ public class DataStructures {
 		}
 	}
 	
-	/*Implementation of a binary tree data structure that builds complete trees*/
+	/*Implementation of a binary tree data structure that builds a complete tree*/
 	static class TreeNode<T>{
 		T data;
 		TreeNode<T> left;
@@ -368,9 +434,9 @@ public class DataStructures {
 		}
 		
 		void add(T d) throws Exception{
-			MyQueue<TreeNode<T>> queue = new MyQueue<TreeNode<T>>();
+			MyQueue<TreeNode<T>> next_nodes = new MyQueue<TreeNode<T>>(); //stores next nodes to view/touch
 			TreeNode<T> node = new TreeNode<T>(d);
-			boolean finished = false;
+			boolean finished = false; //stores whether the new node has been added to the tree or not
 			
 			if(left == null)
 				left = node;
@@ -378,7 +444,7 @@ public class DataStructures {
 				right = node;
 			else{
 				TreeNode<T> node2 = left;
-				queue.add(right);
+				next_nodes.add(right);
 				while(finished == false){
 					if(node2.left == null){
 						node2.left = node;
@@ -389,9 +455,9 @@ public class DataStructures {
 						finished =true;
 					}
 					else{
-						queue.add(node2.left);
-						queue.add(node2.right);
-						node2 = queue.remove();
+						next_nodes.add(node2.left);
+						next_nodes.add(node2.right);
+						node2 = next_nodes.remove(); ///store next node to explore
 						}
 					}
 				}		
@@ -399,7 +465,7 @@ public class DataStructures {
 		}
 	
 	/*Implementation of the Post Order Binary Tree Traversal*/
-	static void postOrderTrav(TreeNode root){
+	static void postOrderTrav(TreeNode<?> root){
 		if(root != null){
 			postOrderTrav(root.left);
 			postOrderTrav(root.right);
@@ -408,7 +474,7 @@ public class DataStructures {
 	}
 	
 	/*Implementation of the Pre-Order Binary Tree Traversal*/
-	static void preOrderTrav(TreeNode root){
+	static void preOrderTrav(TreeNode<?> root){
 		if(root != null){
 			System.out.println(root.data);
 			preOrderTrav(root.left);
@@ -417,7 +483,7 @@ public class DataStructures {
 	}
 	
 	/*Implementation of the In-Order Tree Traversal*/
-	static void inOrderTrav(TreeNode root){
+	static void inOrderTrav(TreeNode<?> root){
 		if(root != null){
 			inOrderTrav(root.left);
 			System.out.println(root.data);
@@ -461,68 +527,23 @@ public class DataStructures {
 		}
 	}
 	
-	/*
-	static class MinHeap{
-		int data;
-		MinHeap left;
-		MinHeap right;
-		MinHeap parent;
-		
-		MinHeap(int d){
-			data = d;
-		}
-		
-		void add(int d) throws Exception{
-			MyQueue<MinHeap> queue = new MyQueue<MinHeap>();
-			MinHeap node = new MinHeap(d);
-			boolean finished = false;
-			
-			if(left == null){
-				node.parent = this;
-				left = node;
-			}
-			else if(right == null){
-				node.parent = this;
-				right = node;
-			}
-			else{
-				MinHeap node2 = left;
-				queue.add(right);
-				while(finished == false){
-					if(node2.left == null){
-						node.parent = node2;
-						node2.left = node;
-						finished = true;
-					}
-					else if(node2.right == null){
-						node.parent = node2;
-						node2.right = node;
-						finished =true;
-					}
-					else{
-						queue.add(node2.left);
-						queue.add(node2.right);
-						node2 = queue.remove();
-						}
-					}
-				}		
-			}
-		
-		int extractMin(){
-			if(left == null && right == null)
-				return this.data;
-			
-		}
-	} */
 	
 	/* Implementation of the bubblesort Algorithm*/
 	static void bubbleSort(int[] arr){
-		int max_touches = arr.length; //will store the max number of nodes to be sorted
-		boolean sorted = false;
+		int max_touches = arr.length;//will store the max number of nodes to be sorted 
+									
+		boolean sorted = false; //checks whether arr is already sorted
+		
+		/*max_touches has to be greater than 1 because once we have only one element to touch
+		 * then it implies the array has been sorted because bubblesort sorts from the end of the array*/
 		while(max_touches > 1){
 			int count2 = 0;
+			/*since bubblesort sorts from the end of the array, each iteration
+			goes until the number of elements to be touched. The -1 is there because each iteration compares
+			arr[count] and arr[count2 + 1]*/
 			while(count2 < max_touches - 1){
-				sorted = true;
+				sorted = true; /*assume the array is already sorted; however, if we do a swap
+				then it means arr is not already sorted*/
 				if(arr[count2] > arr[count2+1]){
 					sorted = false;
 					swap(arr, count2, count2 + 1); //swap values at current index and the adjacent index
@@ -532,10 +553,11 @@ public class DataStructures {
 			if(sorted)
 				break;
 			
-			max_touches --;
+			max_touches --; //reduce the number of elements to be touched minus one
 		}
 	}
 	
+	//swap the elements of arr at index1 and index2
 	static void swap(int[] arr, int index1, int index2){
 		int temp = arr[index1];
 		arr[index1] = arr[index2];
@@ -544,16 +566,23 @@ public class DataStructures {
 	
 	/*Implementaion of the Selection Sort Algorithm*/
 	static void selectionSort(int[] arr){
-		int max_touches = arr.length; //will store maximum num of nodes to be sorted
-		boolean sorted = false; //checksif the array is already sorted
+		int max_touches = arr.length; //will store maximum number of elements to be sorted
+		boolean sorted = false; //stores whether the array is already sorted
 		
+		/*max_touches has to be greater than 1 because once we have only one element to touch
+		 * then it implies the array has been sorted because selectionsort sorts from the end of the array*/
 		while(max_touches > 1){
 			int c2 = 0;
-			int max_index = max_touches - 1;
+			int max_index = max_touches - 1; //we will assume the maximum element is at the last element to be touched
+											// it is max_touches - 1 because max_touches initially equals arr.length
 			sorted = true; //we will assume the array is sorted, and update if wrong
+			
+			/*since selectionsort sorts from the end of the array, each iteration
+			goes until the number of elements to be touched. The -1 is there because the first iteration already
+			checks if arr[c2] >= arr[max_index] before max_index gets updated in the following iterations*/
 			while(c2 < max_touches - 1){
 				if(arr[c2] >= arr[max_index]){
-					sorted = false;
+					sorted = false; //once we need to do a swap then it implies the array is not already sorted
 					max_index = c2;
 				}
 				c2 ++;
@@ -561,31 +590,31 @@ public class DataStructures {
 			if(sorted)
 				break;
 			
-			swap(arr, max_index, max_touches -1); //swapp the largest so far with last of the unsorted part 
-			max_touches --;
+			swap(arr, max_index, max_touches -1); //swap the largest so far with the last element of the unsorted part of the array 
+			max_touches --; 
 		}
 	}
 	
 	/*Implementation of the Merge Sort Algorithm*/
 	static void mergeSort(int[] arr){
-		int[] helper = new int[arr.length];
-		int low = 0;
-		int high = arr.length -1;
-		mergeSort(arr, helper, low, high);
+		int[] helper = new int[arr.length]; //temporarily stores the elements of arr
+		int left = 0;
+		int right = arr.length -1;
+		mergeSort(arr, helper, left, right);
 	}
 	
-	static void mergeSort(int[] arr, int[] helper, int low, int high){
-		if(low < high){
-			int middle = (low + high)/2;
-			mergeSort(arr, helper, low, middle);
-			mergeSort(arr, helper, middle + 1, high);
-			merge(arr, helper, low, middle, high);
+	static void mergeSort(int[] arr, int[] helper, int left, int right){
+		if(left < right){
+			int middle = (left + right)/2;
+			mergeSort(arr, helper, left, middle);
+			mergeSort(arr, helper, middle + 1, right);
+			merge(arr, helper, left, middle, right);
 		}
 	}
 	
 	static void merge(int[] arr, int[] helper, int low, int middle, int high){
 		for(int i = 0; i <= high; i ++){
-			//copy elements in the array into a helper array that will temporarily store the current elements in array
+			//copy elements in the array into a helper array that will temporarily store the current elements in arr
 			helper[i] = arr[i];
 		}
 		int curr = low;
@@ -604,7 +633,7 @@ public class DataStructures {
 		}
 		
 		int remaining = middle - helperLeft; //store number of remaining elements in the left side of arr
-		//copy remaining elements in the left side of array into the remaining places in their correct places
+		//copy remaining elements in the left side of helper array into the remaining places in arr
 		for(int  i = 0; i <= remaining; i ++){
 			arr[curr + i] = helper[helperLeft + i];
 		}
@@ -612,36 +641,36 @@ public class DataStructures {
 	
 	/*Implementaion of the QuickSort Algorithm*/
 	static void quicksort(int[] arr){
-		int left = 0;
-		int right = arr.length - 1;
-		quicksort(arr, left, right);
+		int low = 0;
+		int high = arr.length - 1;
+		quicksort(arr, low, high);
 	}
 	
-	static void quicksort(int[] arr, int left, int right){
-		int index = partition(arr, left, right);
-		if(left < index - 1)
-			quicksort(arr, left, index -1);
-		if(index < right)
-			quicksort(arr, index, right);
+	static void quicksort(int[] arr, int low, int high){
+		int index = partition(arr, low, high); //returns index of partition element
+		if(low < index)
+			quicksort(arr, low, index);
+		if(index+1 < high)
+			quicksort(arr, index, high);
 	}
 	
-	static int partition(int[] arr, int left, int right){
-		int mid = (left + right)/2;
-		while(left <= right){
-			while(arr[mid] > arr[left]) left++;
-			while(arr[mid] < arr[right]) right --;
-			if(left <= right){
-				swap(arr, left, right);
-				left ++;
-				right --;
+	static int partition(int[] arr, int low, int high){
+		int mid = (low + high)/2;
+		while(low <= high){
+			while(arr[mid] > arr[low]) low++;
+			while(arr[mid] < arr[high]) high --;
+			if(low <= high){
+				swap(arr, low, high);
+				low ++;
+				high --;
 			}
 		}
-		return left;
+		return mid; //returns index of partition element
 	}
 	
 	/*Implementation of the RadixSort Algorithm*/
 	static void radixsort(int[] arr, int passes) throws Exception{
-		int i = 0; //used to keep track of passes
+		int i = 0; //used to keep track of passes of bucketsort done
 		while(i < passes){
 			bucketsort(arr, i);
 			i ++;
@@ -650,34 +679,23 @@ public class DataStructures {
 	
 	static void bucketsort(int[] arr, int leastSigDig) throws Exception{
 		MyIntQueue[] buckets = new MyIntQueue[10]; //each index corresponds to a digit 0-9
-		boolean[] filled_queues = new boolean[10];
-		int[] buckets_to_fill = new int[arr.length]; //keep track of next bucket with elements in it
-		int next_bucket_counter = 0;
+		
+		
+		//initialize buckets with Queues
 		for(int i = 0; i < buckets.length; i ++){
 			buckets[i] = new MyIntQueue();
-			filled_queues[i] = false;
 		}
 		
 		for(int i = 0; i < arr.length; i ++){
 			int num = arr[i];
-			int sig_dig = digitAtIndex(num, leastSigDig);
+			int sig_dig = digitAtIndex(num, leastSigDig); //returns the least significant digit of number
 			buckets[sig_dig].add(num);
-			if(!filled_queues[sig_dig]){
-				filled_queues[sig_dig] = true;
-				buckets_to_fill[next_bucket_counter] = sig_dig;
-				next_bucket_counter ++;
-			}
 		}
-		
-	
-		 
-		
+			 
 		int count2 = 0;
 		for(int i = 0; i < arr.length; i ++){
-			if(buckets[buckets_to_fill[count2]].empty()){
-				count2++;
-				arr[i] = buckets[count2].remove();
-			}	
+			while(buckets[count2].empty() && count2 < buckets.length)count2++; //once a queue is empty, move to the next queue containing elements
+			arr[i] = buckets[count2].remove();
 		}
 	}
 	
@@ -688,7 +706,7 @@ public class DataStructures {
 		return quotient%10;
 	}
 	
-	/*Implementation of an Iterative Approach for the Binary Search Algorithm*/
+	/*Implementation of an iterative approach for the Binary Search Algorithm*/
 	static int binarysearch(int[] arr, int n){
 		int low = 0;
 		int high = arr.length - 1;
@@ -701,7 +719,7 @@ public class DataStructures {
 			else
 				return mid;
 		}
-		return -1; //error item not found
+		return -1; //returns -1 if item not found
 	}
 	
 	/*Implementation of a recursive approach of the Binary Search Algorithm*/
@@ -721,6 +739,6 @@ public class DataStructures {
 			else
 				return mid;
 		}
-			return -1;
+			return -1; //error item not found
 	}
 }
