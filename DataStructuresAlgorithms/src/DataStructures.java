@@ -1,8 +1,86 @@
 import java.util.ArrayList;
+import java.util.Queue;
+import java.util.Random;
 
 public class DataStructures {
 	public static void main(String args[]) throws Exception{
 		
+		/*HashTable h = new HashTable(1);
+		h.hash(1, 1);
+		h.hash(2, 4);
+		h.hash(3, 9);
+		System.out.println(h.get(1) + " " + h.get(2) + " " + h.get(3) + " " + h.get(5));*/
+		
+		/*String[] word_list = {"my", "name", "is", "elikem"};
+		StringBuilder sentence = new StringBuilder();
+		for(String w: word_list){
+			sentence.append(w);
+		}
+		System.out.println(sentence.changeToString());*/
+		
+		/*mArrayList arr = new mArrayList();
+		System.out.println(" size: " + arr.arr_size());
+		arr.add(1);
+		System.out.println(arr.find(1) + " size: " + arr.arr_size());
+		arr.add(3);
+		System.out.println(arr.find(3) + " size: " + arr.arr_size());
+		arr.add(-1);
+		System.out.println(arr.find(-1) + " size: " + arr.arr_size());
+		System.out.println(arr.get(0) + " " + arr.get(1) + " " + arr.get(2)); */
+		
+		/*MyStack<Integer> stack = new MyStack<Integer>();
+		stack.push(5);
+		stack.push(4);
+		stack.push(3);
+		System.out.println(stack.pop() + " " + stack.pop() + " " + stack.pop()); */
+		
+		
+		/*MyQueue<String> queue = new MyQueue<String>();
+		queue.add("my");
+		queue.add("name");
+		queue.add("elikem");
+		System.out.println(queue.remove() + " " + queue.remove() + " " + queue.remove());*/
+		
+		/*TreeNode<Integer> t = new TreeNode<Integer>(3);
+		t.add(4);
+		t.add(5);
+		t.add(8);
+		t.add(9);
+		
+		postOrderTrav(t); */
+		
+		/*
+		int[] arr = {1,2,4,3,5,6,7};
+		bubbleSort(arr);
+		printarr("bubblesort",arr);
+		int[] arr2 = {1,2,3,4,5,6,7};
+		selectionSort(arr2);
+		printarr("selectionsort", arr2);
+		int[] arr3 = {1,2,3,4,5,6,7,8};
+		mergeSort(arr3);
+		printarr("mergesort", arr3);
+		int[] arr4 = {7,3,5,8,5,1};
+		quicksort(arr4);
+		printarr("quicksort",arr4);
+		int[] arr5 = {10, 11, 9, 8, 100, 250};
+		radixsort(arr5, 3);
+		printarr("radixsort", arr5);
+		
+		//int[] search_arr = {};
+		//System.out.println(binarysearch(search_arr,1));
+		
+		//int[] search_arr = {-1,0,3,5,7,8};
+		//System.out.println(binarySearchRecursive(search_arr, 2));*/
+		
+		/*RandomBinaryTree<String> r = new RandomBinaryTree<String>();
+		r.insert("1");
+		r.insert("2");
+		r.insert("3");
+		r.insert("4");
+		r.insert("5");
+		r.insert("6");
+		r.delete("1");
+		System.out.println(r.find("4").leftchild.data);*/
 	}
 	
 	/*Prints the elements in an array*/
@@ -673,5 +751,161 @@ public class DataStructures {
 				return mid;
 		}
 			return -1; //error item not found
+	}
+	
+	/*BinaryTree with insert(), delete(), find() methods 
+	 * and a getRandomNode() method that returns a random node in the tree*/
+	static class RandomBinaryTree<T>{
+		private class Node{
+			T data;
+			Node parent;
+			Node leftchild;
+			Node rightchild;
+			
+			Node(T d){
+				data = d;
+			}
+		}
+		
+		private Node root;
+		private ArrayList<Node> nodelist = new ArrayList<Node>(); //stores a list of the nodes currently in the tree
+		
+		
+		void insert(T d) throws EmptyQueueException{
+			boolean inserted = false; //indicates whether new node has been added to the tree
+			Node r = root;
+			MyQueue<Node> nextnodes = new MyQueue<Node>(); //keeps track of next node to explore in the while-loop
+			if(r == null){ //if tree is empty
+				root = new Node(d);
+				nodelist.add(root);
+				inserted = true;
+			}
+			else
+				nextnodes.add(r);
+			
+			while(!inserted){
+				Node n = nextnodes.remove();
+				if(n.leftchild == null){ //if node has no leftchild then make new node it's left child
+					Node s = new Node(d);
+					n.leftchild = s;
+					s.parent = n;
+					nodelist.add(s);
+					inserted = true;
+				}
+				else if(n.rightchild == null){ //if node has a leftchild but no rightchild then make new node it's roghtchild
+					Node s = new Node(d);
+					n.rightchild = s;
+					s.parent = n;
+					nodelist.add(s);
+					inserted = true;
+				}
+				else{ //if node has left and right children then add them to the queue
+					nextnodes.add(n.leftchild);
+					nextnodes.add(n.rightchild);
+				}
+			}
+		}
+		
+		Node find(T d){
+			for(int i = 0; i < nodelist.size(); i++){
+				if(nodelist.get(i).data == d)
+					return nodelist.get(i);
+			}
+			Node null_node = new Node(null);
+			return null_node; //return null_node if node does not exist in tree
+		}
+		
+		void delete(T d) throws NoSuchElementException, EmptyQueueException{
+			Node n = find(d); 
+			int list_index = findIndex(d); //stores index of node in the nodelist array
+			if(list_index != -1){//if node exists in the tree
+				leftRotateRemove(n); //rotates n with its leftchild and deletes it
+				nodelist.remove(list_index);
+			}
+			else
+				throw new NoSuchElementException();
+		}
+		
+		/*returns index of node in the nodelist array*/
+		private int findIndex(T d){
+			for(int i = 0; i < nodelist.size(); i ++){
+				if(nodelist.get(i).data == d)
+					return i;
+			}
+			return -1; //returns -1 if node does not exist in the nodelist array
+		}
+		
+		//rotates node with it's left child and also deletes it from the tree
+		private void leftRotateRemove(Node n) throws EmptyQueueException{
+			if(n == root){
+				if(n.leftchild == null)
+					root = null;
+				else if(n.rightchild == null)
+					root = n.leftchild;
+				else{
+					Node r = n.rightchild;
+					root = n.leftchild;
+					insert(r, root); // insert r at the end of root's subtree
+				}
+			}
+			
+			else {
+				boolean left_descendant = n.parent.leftchild == n; //stores whether n is the left child of it's parent
+				if (n.leftchild == null) {
+					if (left_descendant)
+						n.parent.leftchild = null;
+					else
+						n.parent.rightchild = null;
+				}
+
+				else if (n.rightchild == null) {
+					n.leftchild.parent = n.parent;
+					if (left_descendant)
+						n.parent.leftchild = n.leftchild;
+					else
+						n.parent.rightchild = n.leftchild;
+				} else {
+					Node r = n.rightchild;
+					n.leftchild.parent = n.parent;
+					if (left_descendant)
+						n.parent.leftchild = n.leftchild;
+					else
+						n.parent.rightchild = n.leftchild;
+					insert(r, n.leftchild); //insert r at the end of n.leftchild's subtree
+				}
+			}
+		}
+		
+		/*goes through the subtree r, and inserts n at the of this subtree*/
+		private void insert(Node n, Node r) throws EmptyQueueException{
+			MyQueue<Node> nextnodes = new MyQueue<Node>(); //keeps tracks of next nodes to visit in the while-loop
+			boolean inserted = false; //indicates whether n has been inserted or not
+			nextnodes.add(r);
+			
+			while(inserted == false){
+				Node curr_node = nextnodes.remove();
+				if(curr_node.leftchild == null){ //if curr_node has no left child then make n its left child
+					curr_node.leftchild = n;
+					n.parent = curr_node;
+					inserted = true;
+				}
+				else if(curr_node.rightchild == null){ //if curr_node has no right child then make n its right child
+					curr_node.rightchild = n;
+					n.parent = curr_node;
+					inserted = true;
+				}
+				else{ //if curr_node has left and right children then add them to the queue
+					nextnodes.add(curr_node.leftchild);
+					nextnodes.add(curr_node.rightchild);
+				}
+			}
+		}
+		
+		/*returns a random node from the nodelist array*/
+		Node getRandomNode(){
+			Random r = new Random();
+			int index = (int) r.nextInt(nodelist.size() - 1);
+			return nodelist.get(index);
+		}
 	}
 }
