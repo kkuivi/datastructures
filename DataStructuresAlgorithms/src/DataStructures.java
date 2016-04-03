@@ -17,16 +17,15 @@ public class DataStructures {
 			sentence.append(w);
 		}
 		System.out.println(sentence.changeToString());*/
-		
 		/*mArrayList arr = new mArrayList();
 		System.out.println(" size: " + arr.arr_size());
 		arr.add(1);
-		System.out.println(arr.find(1) + " size: " + arr.arr_size());
+		System.out.println(arr.find(1) + " size: " + arr.arr_size() + " capacity: " + arr.arr_capacity());
 		arr.add(3);
-		System.out.println(arr.find(3) + " size: " + arr.arr_size());
+		System.out.println(arr.find(3) + " size: " + arr.arr_size() + " capacity: " + arr.arr_capacity());
 		arr.add(-1);
-		System.out.println(arr.find(-1) + " size: " + arr.arr_size());
-		System.out.println(arr.get(0) + " " + arr.get(1) + " " + arr.get(2)); */
+		System.out.println(arr.find(-1) + " size: " + arr.arr_size() + " capacity: " + arr.arr_capacity());
+		System.out.println(arr.get(0) + " " + arr.get(1) + " " + arr.get(2) + " capacity: " + arr.arr_capacity()); */
 		
 		/*MyStack<Integer> stack = new MyStack<Integer>();
 		stack.push(5);
@@ -164,7 +163,7 @@ public class DataStructures {
 				indices[i] = new Node();
 		}
 		
-
+		/*Hash Function*/ 
 		int hashcode(int x){
 			int result = (int) Math.pow(x,x);
 			return result;
@@ -213,7 +212,7 @@ public class DataStructures {
 		
 		
 		int get(int k){
-			Node n = this.next;
+			Node n = this;
 	
 			while(n != null){
 				if(n.key == k)
@@ -227,19 +226,26 @@ public class DataStructures {
 	
 	/*Implementation of a StringBuilder*/
 	static class StringBuilder{
-		ArrayList<String> words;
+		ArrayList<Character> words;
 		
 		StringBuilder() {
-			words = new ArrayList<String> ();
+			words = new ArrayList<Character> ();
 		}
 		
 		void append(String s){
-			words.add(s);
+			for(int i = 0; i < s.length(); i++){
+				char c = s.charAt(i);
+				words.add(c);
+			}
 		}
 		
 		
 		String changeToString(){
-			return words.toString().replaceAll("\\[|\\]|,", ""); //removes all "[", "]", "," from the String value of words returned
+			char[] str = new char[words.size()];
+			for(int i = 0; i < words.size(); i ++){
+				str[i] = words.get(i);
+			}
+			return new String(str);
 		}	
 	}
 	
@@ -277,7 +283,7 @@ public class DataStructures {
 		}
 		
 		int find(int num){
-			for(int i = 0; i < arr.length; i++){
+			for(int i = 0; i < empty_index; i++){
 				if(arr[i] == num)
 					return i;
 			}
@@ -285,6 +291,10 @@ public class DataStructures {
 		}
 		
 		int arr_size(){
+			return empty_index;
+		}
+		
+		int arr_capacity(){
 			return arr.length;
 		}
 		
