@@ -5,6 +5,7 @@ import java.util.Random;
 public class DataStructures {
 	public static void main(String args[]) throws Exception{
 		
+<<<<<<< HEAD
 		/*HashTable h = new HashTable(1);
 		h.hash(1, 1);
 		h.hash(2, 4);
@@ -80,6 +81,9 @@ public class DataStructures {
 		r.insert("6");
 		r.delete("1");
 		System.out.println(r.find("4").leftchild.data);*/
+=======
+	
+>>>>>>> origin/master
 	}
 	
 	/*Prints the elements in an array*/
