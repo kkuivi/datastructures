@@ -88,7 +88,7 @@ public class DataStructures {
 				indices[i] = new Node();
 		}
 		
-		/*Hash Function*/ 
+		/*Sample hash function: Not a good Hash Function*/ 
 		int hashcode(int x){
 			int result = (int) Math.pow(x,x);
 			return result;
