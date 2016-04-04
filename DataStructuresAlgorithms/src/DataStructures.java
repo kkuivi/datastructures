@@ -137,7 +137,7 @@ public class DataStructures {
 		
 		
 		int get(int k){
-			Node n = this;
+			Node n = this.next;
 	
 			while(n != null){
 				if(n.key == k)
