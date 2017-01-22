@@ -484,14 +484,16 @@ public class DataStructures {
 		 * then it implies the array has been sorted because bubblesort sorts from the end of the array*/
 		while(max_touches > 1){
 			int count2 = 0;
+			
+			sorted = true; /*assume the array is already sorted; however, if we do a swap
+				then it means arr is not already sorted*/
+			
 			/*since bubblesort sorts from the end of the array, each iteration
 			goes until the number of elements to be touched. The -1 is there because each iteration compares
 			arr[count] and arr[count2 + 1]*/
 			while(count2 < max_touches - 1){
-				sorted = true; /*assume the array is already sorted; however, if we do a swap
-				then it means arr is not already sorted*/
 				if(arr[count2] > arr[count2+1]){
-					sorted = false;
+					sorted = false; //once we need to do a swap then it implies the array is not already sorted
 					swap(arr, count2, count2 + 1); //swap values at current index and the adjacent index
 				}
 				count2 ++;
@@ -521,15 +523,22 @@ public class DataStructures {
 			int max_index = max_touches - 1; //we will assume the maximum element is at the last element to be touched
 											// it is max_touches - 1 because max_touches initially equals arr.length
 			
+			sorted = true; /*assume the array is already sorted; however, if we do a swap
+				then it means arr is not already sorted*/
+			
 			/*since selectionsort sorts from the end of the array, each iteration
 			goes until the number of elements to be touched. The -1 is there because the first iteration already
 			checks if arr[c2] >= arr[max_index] before max_index gets updated in the following iterations*/
 			while(c2 < max_touches - 1){
 				if(arr[c2] >= arr[max_index]){
+					sorted = false; //once we need to do a swap then it implies the array is not already sorted
 					max_index = c2;
 				}
 				c2 ++;
 			}
+			
+			if(sorted)
+				break;
 			
 			swap(arr, max_index, max_touches -1); //swap the largest so far with the last element of the unsorted part of the array 
 			max_touches --; 
