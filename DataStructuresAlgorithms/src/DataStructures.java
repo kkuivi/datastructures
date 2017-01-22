@@ -516,6 +516,8 @@ public class DataStructures {
 	static void selectionSort(int[] arr){
 		int max_touches = arr.length; //will store maximum number of elements to be sorted
 		
+		boolean sorted = false; //checks whether arr is already sorted
+		
 		/*max_touches has to be greater than 1 because once we have only one element to touch
 		 * then it implies the array has been sorted because selectionsort sorts from the end of the array*/
 		while(max_touches > 1){
