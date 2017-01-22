@@ -513,7 +513,6 @@ public class DataStructures {
 	/*Implementaion of the Selection Sort Algorithm*/
 	static void selectionSort(int[] arr){
 		int max_touches = arr.length; //will store maximum number of elements to be sorted
-		boolean sorted = false; //stores whether the array is already sorted
 		
 		/*max_touches has to be greater than 1 because once we have only one element to touch
 		 * then it implies the array has been sorted because selectionsort sorts from the end of the array*/
@@ -521,20 +520,16 @@ public class DataStructures {
 			int c2 = 0;
 			int max_index = max_touches - 1; //we will assume the maximum element is at the last element to be touched
 											// it is max_touches - 1 because max_touches initially equals arr.length
-			sorted = true; //we will assume the array is sorted, and update if wrong
 			
 			/*since selectionsort sorts from the end of the array, each iteration
 			goes until the number of elements to be touched. The -1 is there because the first iteration already
 			checks if arr[c2] >= arr[max_index] before max_index gets updated in the following iterations*/
 			while(c2 < max_touches - 1){
 				if(arr[c2] >= arr[max_index]){
-					sorted = false; //once we need to do a swap then it implies the array is not already sorted
 					max_index = c2;
 				}
 				c2 ++;
 			}
-			if(sorted)
-				break;
 			
 			swap(arr, max_index, max_touches -1); //swap the largest so far with the last element of the unsorted part of the array 
 			max_touches --; 
